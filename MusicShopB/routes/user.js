@@ -2,6 +2,8 @@ let { query } = require('express');
 const express = require('express');
 const router = express.Router();
 const connection = require('../connection');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 router.post('/signup', (req, res) => {
 	let user = req.body;
@@ -19,6 +21,29 @@ router.post('/signup', (req, res) => {
 				});
 			} else {
 				return res.status(400).json({ message: 'Email already exists' });
+			}
+		} else {
+			return res.status(500).json(err);
+		}
+	});
+});
+
+router.post('/login', (req, res) => {
+	let user = req.body;
+	query = `select email, password, role, status from usert where email = '${user.email}'`;
+	connection.query(query, (err, results) => {
+		if (!err) {
+			if (results.rows.length <= 0 || results[0].password != user.password) {
+				return res
+					.statusCode(401)
+					.json({ message: `Incorect username or password` });
+			} else if (results[0].status === 'false') {
+				return res.status(401).json({ message: 'Wait for admin approval...' });
+			} else if (results[0].password == user.password) {
+			} else {
+				return res
+					.status(400)
+					.json({ message: 'Something went wrong :( Please try again later.' });
 			}
 		} else {
 			return res.status(500).json(err);
