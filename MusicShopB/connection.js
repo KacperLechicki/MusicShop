@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const { Client } = require('pg');
 
 const connection = new Client({
@@ -17,4 +18,4 @@ connection.connect((err) => {
 	}
 });
 
-module.export = connection;
+module.exports = connection;
