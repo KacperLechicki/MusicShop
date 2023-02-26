@@ -65,11 +65,12 @@ router.post('/login', (req, res) => {
 	});
 });
 
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
+const transporter = nodemailer.createTransport({
+	host: 'sandbox.smtp.mailtrap.io',
+    port: 2525,
 	auth: {
-		user: process.env.EMAIL,
-		pass: process.env.PASSWORD,
+		user: process.env.MAIL_EMAIL,
+		pass: process.env.MAIL_PASSWORD,
 	},
 });
 
@@ -84,7 +85,7 @@ router.post('/forgotPassword', (req, res) => {
 					.json({ message: 'Password sent successfully to your email.' });
 			} else {
 				let mailOptions = {
-					from: process.env.EMAIL,
+					from: process.env.MAIL_EMAIL,
 					to: results.rows[0].email,
 					subject: 'Password by Music Store',
 					html: `<p><b>Your login details for Music Store: </b><br><b>Email: </b>${results.rows[0].email}<br><b>Password: </b>${results.rows[0].password}<br><a href="http://localhost:4200/">Click here to login</a></p>`,
@@ -102,5 +103,9 @@ router.post('/forgotPassword', (req, res) => {
 		}
 	});
 });
+
+router.get('/get', (req, res) => {
+
+})
 
 module.exports = router;
