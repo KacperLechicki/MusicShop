@@ -10,3 +10,9 @@ create table usert (
 );
 
 insert into usert(name, contactNumber, email, password, status, role) values ('admin', '123456789', 'admin@gmail.com', 'password', 'true', 'admin');
+
+create table category (
+    id serial not null,
+    name varchar(255) not null,
+    primary key (id)
+);
