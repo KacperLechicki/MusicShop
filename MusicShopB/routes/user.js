@@ -5,6 +5,8 @@ const connection = require('../connection');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+let auth = require('../services/auth');
+let checkRole = require('../services/checkRole');
 
 //obsługa zapytań post przy rejestracji
 router.post('/signup', (req, res) => {
@@ -67,7 +69,7 @@ router.post('/login', (req, res) => {
 
 const transporter = nodemailer.createTransport({
 	host: 'sandbox.smtp.mailtrap.io',
-    port: 2525,
+	port: 2525,
 	auth: {
 		user: process.env.MAIL_EMAIL,
 		pass: process.env.MAIL_PASSWORD,
@@ -104,8 +106,38 @@ router.post('/forgotPassword', (req, res) => {
 	});
 });
 
-router.get('/get', (req, res) => {
+router.get('/get', auth.auth, (req, res) => {
+	query = `select id, name, email, contactNumber, status from usert where role = 'user'`;
+	connection.query(query, (err, results) => {
+		if (!err) {
+			return res.status(200).json(results.rows);
+		} else {
+			return res.status(500).json(err);
+		}
+	});
+});
 
-})
+router.patch('/update', auth.auth, (req, res) => {
+	let user = req.body;
+	query = `update usert set status = ${user.status} where id = ${user.id}`;
+	connection.query(query, (err, responses) => {
+		if (!err) {
+			if (results.affectedRows == 0) {
+				return res.statusCode(404).json({ message: 'User id is not exist!' });
+			}
+			return res.status(200).json({ message: 'User updated successfully' });
+		} else {
+			return res.status(500).json(err);
+		}
+	});
+});
+
+router.get('/checkToken', (req, res) => {
+	return res.status(200).json({ message: 'true' });
+});
+
+router.post('/changePassword', (req, res) => {
+	// const
+});
 
 module.exports = router;
