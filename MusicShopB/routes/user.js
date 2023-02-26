@@ -136,7 +136,7 @@ router.get('/checkToken', (req, res) => {
 	return res.status(200).json({ message: 'true' });
 });
 
-router.post('/changePassword', (req, res) => {
+router.post('/changePassword', auth.auth, (req, res) => {
 	const user = req.body;
 	const email = res.locals.email;
 	query = `select * from usert where email = '${email}' and password = '${user.oldPassword}'`;
@@ -145,7 +145,7 @@ router.post('/changePassword', (req, res) => {
 			if (results.rows.length <= 0) {
 				return res.status(400).json({ message: 'Incorrect old password' });
 			} else if (results.rows[0].password == user.oldPassword) {
-				query = `update usert set password = '${user.newPassword}' where email = '${user.email}'`;
+				query = `update usert set password = '${user.newPassword}' where email = '${email}'`;
 				connection.query(query, (err, results) => {
 					if (!err) {
 						return res
