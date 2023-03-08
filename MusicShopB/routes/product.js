@@ -90,4 +90,26 @@ router.delete(
 	}
 );
 
+router.patch(
+	'/updateStatus',
+	auth.auth,
+	checkRole.checkRole,
+	(req, res, next) => {
+		let user = req.body;
+		let query = `update product set status = '${user.status}' where id = ${user.id}`;
+		connection.query(query, (err, results) => {
+			if (!err) {
+				if (results.affectedRows == 0) {
+					return res.status(404).json({ message: 'Product id does not found' });
+				}
+				return res
+					.status(200)
+					.json({ message: 'Product status updated successfully' });
+			} else {
+				return res.status(500).json(err);
+			}
+		});
+	}
+);
+
 module.exports = router;
