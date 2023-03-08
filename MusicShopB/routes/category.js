@@ -35,7 +35,7 @@ router.patch('/update', auth.auth, checkRole.checkRole, (req, res, next) => {
 			if (results.affectedRows == 0) {
 				return res
 					.statusCode(404)
-					.json({ message: 'Category id is not exist!' });
+					.json({ message: 'Category id does not exist!' });
 			}
 			return res.status(200).json({ message: 'Category updated successfully' });
 		} else {

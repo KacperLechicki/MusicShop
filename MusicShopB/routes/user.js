@@ -123,7 +123,7 @@ router.patch('/update', auth.auth, checkRole.checkRole, (req, res) => {
 	connection.query(query, (err, results) => {
 		if (!err) {
 			if (results.affectedRows == 0) {
-				return res.statusCode(404).json({ message: 'User id is not exist!' });
+				return res.statusCode(404).json({ message: 'User id does not exist!' });
 			}
 			return res.status(200).json({ message: 'User updated successfully' });
 		} else {
