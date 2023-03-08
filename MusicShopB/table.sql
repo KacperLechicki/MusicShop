@@ -16,3 +16,13 @@ create table category (
     name varchar(255) not null,
     primary key (id)
 );
+
+create table product (
+    id serial not null,
+    name varchar(255) not null,
+    categoryId integer not null,
+    description varchar(255),
+    price integer,
+    status varchar(20),
+    primary key (id)
+);
