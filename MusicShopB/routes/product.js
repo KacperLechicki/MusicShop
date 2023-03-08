@@ -29,7 +29,7 @@ router.get('/get', auth.auth, (req, res, next) => {
 
 router.get('/getByCategory/:id', auth.auth, (req, res, next) => {
 	const id = req.params.id;
-	let query = `select id, name from product where categoryId = ${id} and status = "true"`;
+	let query = `select id, name from product where categoryId = ${id} and status = 'true'`;
 	connection.query(query, (err, results) => {
 		if (!err) {
 			return res.status(200).json(results.rows);
@@ -67,5 +67,27 @@ router.patch('/update', auth.auth, checkRole.checkRole, (req, res, next) => {
 		}
 	});
 });
+
+router.delete(
+	'/delete/:id',
+	auth.auth,
+	checkRole.checkRole,
+	(req, res, next) => {
+		const id = req.params.id;
+		let query = `delete from product where id = ${id}`;
+		connection.query(query, (err, results) => {
+			if (!err) {
+				if (results.affectedRows == 0) {
+					return res.status(404).json({ message: 'Product id does not found' });
+				}
+				return res
+					.status(200)
+					.json({ message: 'Product deleted successfully' });
+			} else {
+				return res.status(500).json(err);
+			}
+		});
+	}
+);
 
 module.exports = router;
